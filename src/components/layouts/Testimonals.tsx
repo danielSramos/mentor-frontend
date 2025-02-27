@@ -28,6 +28,7 @@ function Testimonial(props: {
               aria-current="true"
               aria-label={item.testimonial}
               data-carousel-slide-to={index}
+              key={index}
             ></button>
           ))}
         </div>

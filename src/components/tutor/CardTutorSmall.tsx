@@ -19,7 +19,7 @@ function CardTutorSmall(props: {
           </div>
         </div>
         <div className="flex items-start">
-          <Star rating={props.rating} is_small={true}/>
+          <Star rating={props.rating} is_small={true} mouseClick={() => {}}/>
         </div>
       </div>
       <div className="mt-4">

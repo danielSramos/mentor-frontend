@@ -11,7 +11,7 @@ function SkillBadge(props: { skills: string[]; is_small: boolean }) {
     >
       {props.skills.map((skill) => (
         <li key={skill}>
-          <a className="bg-gray-200 py-1 px-3 rounded-full" href="/">
+          <a className="bg-gray-200 py-1 px-3 rounded-full">
             {skill}
           </a>
         </li>

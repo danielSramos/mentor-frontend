@@ -1,15 +1,18 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/home";
-import { BrowserRouter, Routes, Route } from "react-router";
-import { Login } from "./pages/login";
-import { List } from "./pages/list";
+import Buscar from "./pages/busca";
+import AppLayout from "./components/layouts/AppLayout";
+import PerfilMentor from "./pages/perfil_mentor";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/list" element={<List />} />
-        <Route path="/" element={<Home />} />
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="buscar" element={<Buscar />} />
+          <Route path="buscar/perfil/:id" element={<PerfilMentor />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

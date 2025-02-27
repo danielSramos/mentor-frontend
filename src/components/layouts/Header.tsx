@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import logo from "../../assets/logo-mentorr.svg";
 
 function Header() {
@@ -7,7 +7,9 @@ function Header() {
       <header className="px-8 md:px-0">
         <div className="container mx-auto flex flex-col md:flex-row py-6 md:py-0 gap-6 md:gap-0 justify-between items-center md:h-24">
           <div>
-            <img src={logo} alt="logotipo Mentorr" />
+            <Link to="/">
+              <img src={logo} alt="logotipo Mentorr" />
+            </Link>
           </div>
           <div className="flex gap-4 md:gap-12 items-center">
             <div className="flex gap-2">
@@ -31,7 +33,7 @@ function Header() {
             <button className="bg-blue-600 text-white px-8 py-3 font-semibold rounded-lg">
               Quero ser Mentorr
             </button>
-            <Link to="/login">Login</Link>
+            <a href="/">Login</a>
           </div>
         </div>
       </header>
@@ -48,28 +50,28 @@ function HeaderMenu() {
         <nav className="hidden md:block">
           <ul className="flex justify-between">
             <li>
-              <a href="/">UX/UI</a>
+              <Link to={`/buscar?habilidade=${"UX/UI"}`}>UX/UI</Link>
             </li>
             <li>
-              <a href="/">Front-end</a>
+              <Link to={`/buscar?habilidade=${"Front-end"}`}>Front-end</Link>
             </li>
             <li>
-              <a href="/">Back-end</a>
+              <Link to={`/buscar?habilidade=${"Back-end"}`}>Back-end</Link>
             </li>
             <li>
-              <a href="/">DevOps</a>
+              <Link to={`/buscar?habilidade=${"DevOps"}`}>DevOps</Link>
             </li>
             <li>
-              <a href="/">Agile</a>
+              <Link to={`/buscar?habilidade=${"agile"}`}>Agile</Link>
             </li>
             <li>
-              <a href="/">Cloud Computing</a>
+              <Link to={`/buscar?habilidade=${"Cloud Computing"}`}>Cloud Computing</Link>
             </li>
             <li>
-              <a href="/">Inteligência Artificial</a>
+              <Link to={`/buscar?habilidade=${"Inteligência Artificial"}`}>Inteligência Artificial</Link>
             </li>
             <li>
-              <a href="/">Segurança da Informação</a>
+              <Link to={`/buscar?habilidade=${"Segurança da Informação"}`}>Segurança da Informação</Link>
             </li>
           </ul>
         </nav>

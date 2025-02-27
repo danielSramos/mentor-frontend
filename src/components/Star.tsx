@@ -11,7 +11,7 @@ function Star({
     <figure className="flex">
       {[...Array(5)].map((_, index) => (
         <svg
-          onClick={() => mouseClick(index + 1)}
+          onMouseOver={() => mouseClick(index + 1)}
           key={index}
           width={is_small ? "16" : "31"}
           height={is_small ? "16" : "31"}

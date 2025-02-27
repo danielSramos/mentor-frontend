@@ -1,17 +1,44 @@
+import { Link } from "react-router-dom";
 import SkillBadge from "../components/badges/SkillBadge";
-import Footer from "../components/layouts/Footer";
-import Header from "../components/layouts/Header";
 import Testimonial from "../components/layouts/Testimonals";
 import CardTutorSmall from "../components/tutor/CardTutorSmall";
-import developers from "../mocks/tutores.json";
+// import developers from "../mocks/tutores.json";
 import testimonials from "../mocks/testimonials.json";
-import { useNavigate } from "react-router";
-import { Pricing } from "../components/Prices";
+import { useEffect, useState } from "react";
+
+type Tutor = {
+  id: number;
+  name: string;
+  role: string;
+  rating: number;
+  photo: string;
+  skills: string[];
+};
 
 function Home() {
+  const [tutores, setTutores] = useState<Tutor[]>([]);
+
+  // COMO NÃO FAZER
+  /*
+  fetch(
+    "https://my-json-server.typicode.com/caetanovns/mentorr-fake-json/tutores"
+  )
+    .then((res) => res.json())
+    .then((data : Tutor[]) => setTutores(data));
+  */
+
+  // ALGO DESSE TIPO
+  useEffect(() => {
+    fetch(
+      "https://my-json-server.typicode.com/caetanovns/mentorr-fake-json/tutores"
+    )
+      .then((res) => res.json())
+      .then((data: Tutor[]) => setTutores(data));
+    //console.log("busca tutores");
+  }, []);
+
   return (
     <>
-      <Header />
       <Hero />
       <Testimonial testimonials={testimonials} />
       <section className="px-8 md:px-0">
@@ -22,7 +49,7 @@ function Home() {
         </div>
         <div className="container mx-auto pb-14">
           <div className="grid md:grid-cols-3 gap-6">
-            {developers.map((dev) => (
+            {tutores?.map((dev) => (
               <CardTutorSmall
                 name={dev.name}
                 role={dev.role}
@@ -36,13 +63,12 @@ function Home() {
         </div>
       </section>
       <Pricing />
-      <Footer />
     </>
   );
 }
 
 function Hero() {
-  const navigate = useNavigate();
+  const [busca, setBusca] = useState<string>("");
   return (
     <section className="flex flex-col justify-center py-14 px-8 md:px-0">
       <div className="flex flex-col text-center gap-6">
@@ -62,16 +88,20 @@ function Hero() {
 
         <div className="flex w-full md:w-1/3 mx-auto gap-4 px-8">
           <input
+            onChange={(event) => {
+              setBusca(event.target.value);
+            }}
+            value={busca}
             className="border h-14 rounded-lg w-full md:w-3/4 px-4"
             type="text"
             placeholder="Busque por habilidades, tecnologias, etc..."
           />
-          <button
-            onClick={() => navigate("/list")}
-            className="md:w-1/4 px-6 bg-blue-600 text-white font-bold rounded-lg"
+          <a
+            href={`/buscar?habilidade=${busca}`}
+            className="flex justify-center items-center md:w-1/4 px-6 bg-blue-600 text-white font-bold rounded-lg cursor-pointer"
           >
             Buscar
-          </button>
+          </a>
         </div>
 
         <div className="md:w-1/3 mx-auto">
@@ -112,6 +142,33 @@ function Hero() {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function Pricing() {
+  return (
+    <section className="bg-slate-900 text-white py-14">
+      <div className="container mx-auto flex flex-col justify-center items-center gap-10">
+        <h4 className="md:text-3xl font-bold">
+          Que tal monetizar sua experiência?
+        </h4>
+        <h3 className="text-2xl md:text-4xl font-bold">
+          Torne-se um mentorr especializado
+        </h3>
+        <div className="flex flex-col md:flex-row gap-6">
+          <button className="bg-blue-600 px-12 font-bold py-4 rounded-lg hover:bg-blue-700">
+            Quero ser Mentorr
+          </button>
+          <Link
+            to="/buscar"
+            className="font-bold border border-blue-600 px-12 py-4 rounded-lg hover:bg-blue-600"
+          >
+            Quero ser aluno
+          </Link>
+        </div>
+        <p className="text-slate-300">Não é necessário cartão de crédito.</p>
       </div>
     </section>
   );
