@@ -69,7 +69,7 @@ function TestimonialItem({
               <img
                 className="w-16 rounded-full"
                 src="https://placehold.co/400"
-                alt="Kauan Ribeiro"
+                alt="Imagem do mentor"
               />
             </figure>
           </div>

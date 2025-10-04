@@ -1,6 +1,4 @@
 function SkillBadge(props: { skills: string[]; is_small: boolean }) {
-  // leading-8 ou text-sm
-
   return (
     <ul
       className={`flex gap-2 flex-wrap ${

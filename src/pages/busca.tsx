@@ -1,9 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import lupa from "../assets/lupa.svg";
 import CardMentor from "../components/layouts/CardMentor";
 import { useSearchParams } from "react-router-dom";
+// Importa o hook E o novo tipo de Mentor para uso no useMemo
+import { useMentores, Mentor } from "../hooks/useMentor"; 
+
+// Componente simples de Loading
+function Loading() {
+  return <p className="text-gray-900 Text-lg dark:text-white">CARREGANDO...</p>;
+}
 
 function Buscar() {
+  // Dados estáticos de filtros
   const areas_data = [
     { id: 1, nome: "Back-end" },
     { id: 2, nome: "UX/UI" },
@@ -28,50 +36,59 @@ function Buscar() {
     { id: 5, nome: "Professor" },
   ];
 
-  const [mentores, setMentores] = useState([]);
   const [empresas] = useState(empresas_data);
   const [cargos] = useState(cargos_data);
   const [areas] = useState(areas_data);
   const [areasSelecionadas, setAreasSelecionadas] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-
+  
+  // Parâmetro da URL e Hook
   const [query] = useSearchParams();
   const buscaTudo = query.get("habilidade");
-  const [buscaSimples, setBuscaSimples] = useState("");
+  
+  const { mentores, loading, buscaSimples, setBuscaSimples } = useMentores(buscaTudo);
+
+  // Lógica de Filtro Local (useMemo)
   const dataSource = useMemo(() => {
-    const todosMentores = mentores.filter((item: any) => {
-      if (areasSelecionadas.length <= 0 && !buscaSimples) {
+    // Função auxiliar para verificar se a busca simples ou a área selecionada existe nas skills
+    const mentorPassesFilter = (mentor: Mentor) => {
+      // Se não houver filtros, retorna true
+      if (areasSelecionadas.length === 0 && !buscaSimples) {
         return true;
       }
-      let selecionado = areasSelecionadas.includes(item.habilidade_principal);
-      let temBusca = buscaSimples
-        ? item.habilidade_principal
-            .toLowerCase()
-            .includes(buscaSimples.toLowerCase())
-        : false;
 
-      return selecionado || temBusca;
-    });
-    return todosMentores;
+      // Concatena todos os nomes de áreas de conhecimento do mentor em um array de strings
+      const mentorKnowledgeAreas = mentor.skills
+        .map(skill => skill.knowledgeAreas.name.toLowerCase());
+      
+      const buscaSimplesLower = buscaSimples.toLowerCase();
+
+      // 1. Checa se o mentor tem alguma das áreas selecionadas (checkboxes)
+      const isAreaSelected = areasSelecionadas.some(selectedArea => 
+        mentorKnowledgeAreas.includes(selectedArea.toLowerCase())
+      );
+      
+      // 2. Checa se o mentor tem alguma área de conhecimento que inclui a busca simples (input de texto)
+      const hasSimpleSearchMatch = mentorKnowledgeAreas.some(areaName => 
+        areaName.includes(buscaSimplesLower)
+      );
+
+      // O mentor é exibido se bater com a área selecionada OU com a busca simples
+      return isAreaSelected || hasSimpleSearchMatch;
+    };
+    
+    // Filtra os mentores usando a função
+    return mentores.filter(mentorPassesFilter);
+    
   }, [mentores, buscaSimples, areasSelecionadas]);
-  useEffect(() => {
-    setLoading(true);
-    setMentores([]);
-    setBuscaSimples(buscaTudo ?? "");
-    fetch(
-      `https://my-json-server.typicode.com/caetanovns/mentorr-fake-json/mentores`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setMentores(data);
-        setLoading(false);
-      });
-  }, [buscaTudo]);
-
+  
   return (
     <section>
       <div className="container mx-auto flex flex-col md:flex-row md:gap-16 py-4">
+        
+        {/* Coluna de Filtros */}
         <div className="flex flex-col md:w-1/3 md:p-0 p-6 gap-10">
+          
+          {/* Input: Busque por habilidades (Busca Simples) */}
           <div className="w-full md:w-full mx-auto relative">
             <input
               value={buscaSimples}
@@ -88,6 +105,8 @@ function Buscar() {
               alt="Search Icon"
             />
           </div>
+          
+          {/* Filtro: Área do Conhecimento - Input (UI) */}
           <div className="w-full relative">
             <label
               htmlFor="conhecimento"
@@ -106,6 +125,8 @@ function Buscar() {
               alt="Search Icon"
             />
           </div>
+          
+          {/* Filtro: Área do Conhecimento - Checkboxes (Com lógica de filtro) */}
           <div id="area-container" className="flex flex-col gap-3">
             {areas.map((area) => {
               return (
@@ -114,8 +135,10 @@ function Buscar() {
                     checked={areasSelecionadas.includes(area.nome)}
                     onChange={(event) => {
                       if (event.target.checked) {
+                        // Comportamento: Apenas uma área selecionada por vez
                         setAreasSelecionadas([area.nome]);
                       } else {
+                        // Desmarcando remove todas as áreas
                         setAreasSelecionadas([]);
                       }
                     }}
@@ -127,6 +150,8 @@ function Buscar() {
               );
             })}
           </div>
+          
+          {/* Filtro: Cargo - Input (UI) */}
           <div className="w-full relative">
             <label htmlFor="cargo" className="text-slate-800 font-semibold">
               Cargo
@@ -142,6 +167,8 @@ function Buscar() {
               alt="Search Icon"
             />
           </div>
+          
+          {/* Filtro: Cargo - Checkboxes (UI) */}
           <div id="cargo-container" className="flex flex-col gap-3">
             {cargos.map((cargo) => {
               return (
@@ -155,6 +182,8 @@ function Buscar() {
               );
             })}
           </div>
+          
+          {/* Filtro: Empresas - Input (UI) */}
           <div className="w-full relative">
             <label htmlFor="empresa" className="text-slate-800 font-semibold">
               Empresas
@@ -170,6 +199,8 @@ function Buscar() {
               alt="Search Icon"
             />
           </div>
+          
+          {/* Filtro: Empresas - Checkboxes (UI) */}
           <div id="empresa-container" className="flex flex-col gap-3">
             {empresas.map((empresa) => {
               return (
@@ -184,10 +215,14 @@ function Buscar() {
             })}
           </div>
         </div>
+        
+        {/* Coluna de Mentores (Resultados) */}
         <div id="mentor-container" className="flex flex-col md:w-2/3 gap-6">
           {loading ? (
-            <Loading />
+            <Loading /> 
           ) : dataSource.length > 0 ? (
+            // Mapeia os mentores filtrados
+            // Observação: CardMentor pode precisar de ajustes se ele acessar a propriedade "habilidade_principal"
             dataSource.map((mentor) => (
               <CardMentor key={mentor.id!} mentor={mentor} />
             ))
@@ -203,10 +238,6 @@ function Buscar() {
       </div>
     </section>
   );
-}
-
-function Loading() {
-  return <p className="text-gray-900 Text-lg dark:text-white">CARREGANDO...</p>;
 }
 
 export default Buscar;

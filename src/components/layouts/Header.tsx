@@ -4,7 +4,7 @@ import logo from "../../assets/logo-mentorr.svg";
 function Header() {
   return (
     <>
-      <header className="px-8 md:px-0">
+      <header className="px-8 md:px-0 lg:px-8">
         <div className="container mx-auto flex flex-col md:flex-row py-6 md:py-0 gap-6 md:gap-0 justify-between items-center md:h-24">
           <div>
             <Link to="/">
@@ -33,7 +33,7 @@ function Header() {
             <button className="bg-blue-600 text-white px-8 py-3 font-semibold rounded-lg">
               Quero ser Mentorr
             </button>
-            <a href="/">Login</a>
+            <a href="/login">Login</a>
           </div>
         </div>
       </header>

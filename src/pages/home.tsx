@@ -2,41 +2,12 @@ import { Link } from "react-router-dom";
 import SkillBadge from "../components/badges/SkillBadge";
 import Testimonial from "../components/layouts/Testimonals";
 import CardTutorSmall from "../components/tutor/CardTutorSmall";
-// import developers from "../mocks/tutores.json";
 import testimonials from "../mocks/testimonials.json";
-import { useEffect, useState } from "react";
-
-type Tutor = {
-  id: number;
-  name: string;
-  role: string;
-  rating: number;
-  photo: string;
-  skills: string[];
-};
+import { useState } from "react";
+import { useHomeMentors } from "../hooks/useHomeMentors"; 
 
 function Home() {
-  const [tutores, setTutores] = useState<Tutor[]>([]);
-
-  // COMO NÃO FAZER
-  /*
-  fetch(
-    "https://my-json-server.typicode.com/caetanovns/mentorr-fake-json/tutores"
-  )
-    .then((res) => res.json())
-    .then((data : Tutor[]) => setTutores(data));
-  */
-
-  // ALGO DESSE TIPO
-  useEffect(() => {
-    fetch(
-      "https://my-json-server.typicode.com/caetanovns/mentorr-fake-json/tutores"
-    )
-      .then((res) => res.json())
-      .then((data: Tutor[]) => setTutores(data));
-    //console.log("busca tutores");
-  }, []);
-
+  const { tutores, loading } = useHomeMentors();
   return (
     <>
       <Hero />
@@ -49,7 +20,8 @@ function Home() {
         </div>
         <div className="container mx-auto pb-14">
           <div className="grid md:grid-cols-3 gap-6">
-            {tutores?.map((dev) => (
+            {/* Mapeamento de mentores para o menu principal */}
+            {tutores.map((dev) => (
               <CardTutorSmall
                 name={dev.name}
                 role={dev.role}
@@ -66,6 +38,7 @@ function Home() {
     </>
   );
 }
+
 
 function Hero() {
   const [busca, setBusca] = useState<string>("");
@@ -96,12 +69,13 @@ function Hero() {
             type="text"
             placeholder="Busque por habilidades, tecnologias, etc..."
           />
-          <a
-            href={`/buscar?habilidade=${busca}`}
+          {/* Usando Link para navegação do React Router DOM, que é mais idiomática */}
+          <Link
+            to={`/buscar?habilidade=${busca}`}
             className="flex justify-center items-center md:w-1/4 px-6 bg-blue-600 text-white font-bold rounded-lg cursor-pointer"
           >
             Buscar
-          </a>
+          </Link>
         </div>
 
         <div className="md:w-1/3 mx-auto">
@@ -158,11 +132,15 @@ function Pricing() {
           Torne-se um mentorr especializado
         </h3>
         <div className="flex flex-col md:flex-row gap-6">
-          <button className="bg-blue-600 px-12 font-bold py-4 rounded-lg hover:bg-blue-700">
-            Quero ser Mentorr
-          </button>
           <Link
-            to="/buscar"
+            to="/cadastro"
+            >
+            <button className="bg-blue-600 px-12 font-bold py-4 rounded-lg hover:bg-blue-700">
+              Quero ser Mentorr
+            </button>
+          </Link>
+          <Link
+            to="/cadastro"
             className="font-bold border border-blue-600 px-12 py-4 rounded-lg hover:bg-blue-600"
           >
             Quero ser aluno
