@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useRegister } from "../hooks/useRegister.tsx"; // <-- Importa o novo hook
+import { useRegister } from "../hooks/useRegister.tsx";
 
 function Cadastro() {
   const [name, setName] = useState("");
@@ -26,9 +26,8 @@ function Cadastro() {
 
     if (success) {
         alert("Cadastro realizado com sucesso! Faça login para continuar.");
-        navigate('/login'); // Redireciona para a página de login
+        navigate('/login'); 
     }
-    // Se falhar, o hook já mostra o alert do erro.
   };
 
   return (

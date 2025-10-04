@@ -1,17 +1,14 @@
-// src/hooks/useAgendamento.tsx
-
 import { useCallback } from 'react';
-import { getAuthHeaders } from './useAuth.tsx'; // Para autenticação
+import { getAuthHeaders } from './useAuth.tsx';
 
-// Tipos de dados que sua API de agendamento espera
+
 interface AgendamentoData {
   mentorId: string;
-  dataHora: string; // Exemplo: 2025-10-25T14:30:00Z (ISO String)
-  duracao: number; // Exemplo: 60 minutos
+  dataHora: string; 
+  duracao: number;
   topico: string;
 }
 
-// Ajuste esta URL para a rota de agendamento da sua API NestJS
 const AGENDAMENTO_API_URL = "http://localhost:3000/appointments"; 
 
 export const useAgendamento = () => {
@@ -20,13 +17,11 @@ export const useAgendamento = () => {
     try {
       const response = await fetch(AGENDAMENTO_API_URL, {
         method: 'POST',
-        // 🚀 Inclui o token JWT no cabeçalho
         headers: getAuthHeaders(), 
         body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        // Trata erros (token inválido, data indisponível, etc.)
         const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido.' }));
         const errorMessage = Array.isArray(errorData.message) 
             ? errorData.message.join(', ')
@@ -36,7 +31,6 @@ export const useAgendamento = () => {
         return false;
       }
 
-      // Se for sucesso (201 Created), a requisição é concluída.
       console.log("Agendamento criado com sucesso!");
       return true;
 

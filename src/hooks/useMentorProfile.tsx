@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { getAuthHeaders } from "./useAuth";
 import { Mentor } from "./useMentor";
 
-// Tipagem da resposta da API de Perfil
 interface ProfileResponse {
     status: number;
     content: Mentor;
 }
 
-// URL base para buscar um mentor individualmente (ajuste a rota do seu NestJS)
 const PROFILE_API_URL = "http://localhost:3000/mentors"; 
 
 export function useMentorProfile(mentorId: string | undefined) {
@@ -27,11 +25,10 @@ export function useMentorProfile(mentorId: string | undefined) {
     setError(null);
 
     fetch(`${PROFILE_API_URL}/${mentorId}`, {
-        headers: getAuthHeaders() // Envia o token JWT
+        headers: getAuthHeaders()
     })
       .then(async (res) => {
         if (!res.ok) {
-            // Se o ID for inválido ou o token falhar, lança erro
             const errorText = res.statusText || `Erro ${res.status}`;
             throw new Error(`Falha ao buscar perfil: ${errorText}`);
         }
@@ -41,7 +38,6 @@ export function useMentorProfile(mentorId: string | undefined) {
         if (data.status === 200 && data.content) {
             setMentor(data.content);
         } else {
-             // Lida com a resposta do NestJS que usa 'status' e 'content'
             throw new Error(data.status ? `API retornou status: ${data.status}` : 'Dados inválidos no retorno da API.');
         }
       })

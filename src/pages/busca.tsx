@@ -2,16 +2,13 @@ import { useMemo, useState } from "react";
 import lupa from "../assets/lupa.svg";
 import CardMentor from "../components/layouts/CardMentor";
 import { useSearchParams } from "react-router-dom";
-// Importa o hook E o novo tipo de Mentor para uso no useMemo
 import { useMentores, Mentor } from "../hooks/useMentor"; 
 
-// Componente simples de Loading
 function Loading() {
   return <p className="text-gray-900 Text-lg dark:text-white">CARREGANDO...</p>;
 }
 
 function Buscar() {
-  // Dados estáticos de filtros
   const areas_data = [
     { id: 1, nome: "Back-end" },
     { id: 2, nome: "UX/UI" },
@@ -41,42 +38,33 @@ function Buscar() {
   const [areas] = useState(areas_data);
   const [areasSelecionadas, setAreasSelecionadas] = useState<string[]>([]);
   
-  // Parâmetro da URL e Hook
   const [query] = useSearchParams();
   const buscaTudo = query.get("habilidade");
   
   const { mentores, loading, buscaSimples, setBuscaSimples } = useMentores(buscaTudo);
 
-  // Lógica de Filtro Local (useMemo)
   const dataSource = useMemo(() => {
-    // Função auxiliar para verificar se a busca simples ou a área selecionada existe nas skills
     const mentorPassesFilter = (mentor: Mentor) => {
-      // Se não houver filtros, retorna true
       if (areasSelecionadas.length === 0 && !buscaSimples) {
         return true;
       }
 
-      // Concatena todos os nomes de áreas de conhecimento do mentor em um array de strings
       const mentorKnowledgeAreas = mentor.skills
         .map(skill => skill.knowledgeAreas.name.toLowerCase());
       
       const buscaSimplesLower = buscaSimples.toLowerCase();
 
-      // 1. Checa se o mentor tem alguma das áreas selecionadas (checkboxes)
       const isAreaSelected = areasSelecionadas.some(selectedArea => 
         mentorKnowledgeAreas.includes(selectedArea.toLowerCase())
       );
       
-      // 2. Checa se o mentor tem alguma área de conhecimento que inclui a busca simples (input de texto)
       const hasSimpleSearchMatch = mentorKnowledgeAreas.some(areaName => 
         areaName.includes(buscaSimplesLower)
       );
 
-      // O mentor é exibido se bater com a área selecionada OU com a busca simples
       return isAreaSelected || hasSimpleSearchMatch;
     };
     
-    // Filtra os mentores usando a função
     return mentores.filter(mentorPassesFilter);
     
   }, [mentores, buscaSimples, areasSelecionadas]);
@@ -135,10 +123,8 @@ function Buscar() {
                     checked={areasSelecionadas.includes(area.nome)}
                     onChange={(event) => {
                       if (event.target.checked) {
-                        // Comportamento: Apenas uma área selecionada por vez
                         setAreasSelecionadas([area.nome]);
                       } else {
-                        // Desmarcando remove todas as áreas
                         setAreasSelecionadas([]);
                       }
                     }}
@@ -221,8 +207,6 @@ function Buscar() {
           {loading ? (
             <Loading /> 
           ) : dataSource.length > 0 ? (
-            // Mapeia os mentores filtrados
-            // Observação: CardMentor pode precisar de ajustes se ele acessar a propriedade "habilidade_principal"
             dataSource.map((mentor) => (
               <CardMentor key={mentor.id!} mentor={mentor} />
             ))

@@ -16,11 +16,8 @@ function Login() {
     }
 
     setLoading(true);
-    // Chama a função de login do hook
     const success = await login(email, password); 
     
-    // Se for sucesso, o hook já redireciona (navigate('/'))
-    // Se falhar, a mensagem de erro já foi exibida dentro do hook
     setLoading(false);
   };
 

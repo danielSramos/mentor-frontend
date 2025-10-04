@@ -1,26 +1,20 @@
-// src/pages/AgendarMentoria.tsx
-
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAgendamento } from "../hooks/useAgendamento.tsx";
 import { useMentorProfile } from "../hooks/useMentorProfile.tsx";
 
-// Componente simples para a tela de agendamento
 function AgendarMentoria() {
-  const { id: mentorId } = useParams<{ id: string }>(); // ID do mentor da URL
+  const { id: mentorId } = useParams<{ id: string }>(); 
   const navigate = useNavigate();
   const { agendar } = useAgendamento();
   
   // Estados do Formulário
   const [data, setData] = useState("");
   const [hora, setHora] = useState("");
-  const [duracao, setDuracao] = useState<number>(60); // Padrão: 60 minutos
+  const [duracao, setDuracao] = useState<number>(60);
   const [topico, setTopico] = useState("");
   const [loading, setLoading] = useState(false);
   
-  // Nota: Você pode buscar os dados do mentor aqui se quiser exibi-los
-  // (usando o useMentorProfile(mentorId)), mas vamos focar no formulário.
-
   const mentor = useMentorProfile(mentorId);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -37,7 +31,6 @@ function AgendarMentoria() {
 
     setLoading(true);
 
-    // Combina data e hora para criar o formato ISO esperado pela API
     const dataHoraISO = new Date(`${data}T${hora}:00`).toISOString();
 
     const success = await agendar({ 
@@ -51,10 +44,8 @@ function AgendarMentoria() {
 
     if (success) {
         alert("Agendamento solicitado com sucesso! Aguarde a confirmação do mentor.");
-        // Redireciona para o perfil do mentor ou para uma página de sucesso
         navigate(`/buscar/perfil/${mentorId}`); 
     }
-    // Se falhar, o hook já mostra o alert do erro.
   };
 
   return (
@@ -88,7 +79,7 @@ function AgendarMentoria() {
             <input
               id="hora"
               type="time"
-              step="300" // Permite passos de 5 minutos, ou ajuste para 15/30
+              step="300" 
               required
               value={hora}
               onChange={(e) => setHora(e.target.value)}

@@ -1,10 +1,6 @@
-// src/hooks/useMentores.tsx (ou useMentor.tsx, dependendo do seu nome de arquivo)
-
 import { useEffect, useState } from "react";
-// 👈 Importe a função que pega o token
 import { getAuthHeaders } from "./useAuth.tsx"; 
 
-// Definição da nova estrutura de dados (simplificada)
 interface KnowledgeArea {
   id: string;
   name: string;
@@ -16,9 +12,8 @@ interface Skill {
   knowledgeAreas: KnowledgeArea;
 }
 
-// Exportar Mentor é crucial para que Buscar.tsx consiga tipar o useMemo
 export interface Mentor {
-  id: string; // Agora é um UUID
+  id: string;
   name: string;
   email: string;
   company: string | null;
@@ -35,13 +30,9 @@ export interface Mentor {
     }
   };
   verified: any
-  // Onde está a informação da área
-  // ... outros campos
 }
 
-// **MUDE ESTA URL PARA A SUA NOVA API**
-// A rota de busca deve retornar a lista com a estrutura que você forneceu.
-const API_URL = "http://localhost:3000/mentors"; // <-- Use a URL do seu NestJS
+const API_URL = "http://localhost:3000/mentors";
 
 export function useMentores(initialSearchTerm: string | null = "") {
   const [mentores, setMentores] = useState<Mentor[]>([]);
@@ -53,15 +44,12 @@ export function useMentores(initialSearchTerm: string | null = "") {
     setMentores([]);
 
     fetch(API_URL, {
-        // 🚀 ADICIONA O TOKEN JWT AQUI!
         headers: getAuthHeaders() 
     })
       .then((res) => {
         if (!res.ok) {
-          // Se o status for 401/403 (Não autorizado), o usuário deve ser redirecionado para o login.
           if (res.status === 401 || res.status === 403) {
              console.error("Não autorizado. Token inválido ou expirado.");
-             // Aqui você pode chamar o logout() do useAuth se quiser forçar o logout
           }
           throw new Error("Erro ao buscar mentores.");
         }
@@ -76,7 +64,7 @@ export function useMentores(initialSearchTerm: string | null = "") {
       .finally(() => {
         setLoading(false);
       });
-  }, []); // Executa apenas uma vez no mount
+  }, []);
 
   return { mentores, loading, buscaSimples, setBuscaSimples };
 }
